@@ -32,7 +32,9 @@ Make sure you have the following installed:
     pip install -r requirements.txt
     ```
 
-3. Run the script:
+3. Copy the .ady file created by OCA's Nexus to the /config folder.
+
+4. Run the script:
     ```bash
     python .src/main.py
     ```
