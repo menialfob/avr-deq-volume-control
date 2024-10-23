@@ -3,6 +3,7 @@ import denonavr
 from adjustmentlogic import handle_volume_change_callback, parse_volume, format_volume
 from json_loader import load_json_data
 import logging
+import os
 
 debounce_task = None
 latest_volume = None
@@ -56,8 +57,12 @@ async def setup_volume_monitoring():
 
 # Main entry point
 def main():
-    # Get the default event loop
-    loop = asyncio.get_event_loop()
+    try:
+        # Create a new event loop if one doesn't already exist
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
 
     # Run the setup asynchronously and register the callback
     loop.run_until_complete(main_async())
@@ -76,9 +81,9 @@ async def main_async():
     global json_data
 
     logging.getLogger('denonavr').setLevel(logging.INFO)
+    
     # Load the JSON calibration data
-    # config_path = os.getenv("CONFIG_PATH")
-    config_path = "config"
+    config_path = os.getenv('CONFIG_PATH', 'config')
     if not config_path:
         raise ValueError("CONFIG_PATH environment variable is not set.")
     json_data = await load_json_data(config_path)
@@ -87,5 +92,5 @@ async def main_async():
     await setup_volume_monitoring()
 
 if __name__ == "__main__":
-    receiver = denonavr.DenonAVR("192.168.1.142")  # Define the receiver
+    receiver = denonavr.DenonAVR(os.getenv('RECEIVER_IP', '192.168.1.142'))  # Define the receiver
     main()

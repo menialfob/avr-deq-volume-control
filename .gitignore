@@ -1,9 +1,6 @@
 # REW measurement file used for config
 *.ady
 
-# Dockerfile
-Dockerfile
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
