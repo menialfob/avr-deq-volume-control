@@ -1,5 +1,7 @@
-import asyncio
 from json_loader import get_reference_volume, get_speaker_levels
+import logging
+
+logger = logging.getLogger(__name__)
 
 MIN_LEVEL = 38
 MAX_LEVEL = 62
@@ -54,7 +56,7 @@ async def adjust_speaker_volumes(initial_speaker_levels, adjustment_factor, send
 
     adjustments = []  # List to store the formatted adjustment strings as tuples
 
-    print(f"Adjustment factor: {adjustment_factor}")
+    logger.info(f"Adjustment factor: {adjustment_factor}")
     for speaker, initial_level in initial_speaker_levels.items():
         if speaker in quarter_change_speakers:
             quarter_adjustment_factor = round(adjustment_factor * 0.5 * 2) / 2
@@ -67,7 +69,7 @@ async def adjust_speaker_volumes(initial_speaker_levels, adjustment_factor, send
         adjusted_level = max(MIN_LEVEL, min(MAX_LEVEL, (round(adjusted_level * 2) / 2))) 
 
         # Info about what changes we are doing
-        print(f'{speaker}: Initial {initial_level - 50}dB, Adjustment {adjusted_level - initial_level}dB, Final {adjusted_level - 50}dB')
+        logger.info(f'{speaker}: Initial {initial_level - 50}dB, Adjustment {adjusted_level - initial_level}dB, Final {adjusted_level - 50}dB')
 
         # Format the adjustments for sending via telnet
         adjustments.append(f"SSLEV{speaker} {format_volume(adjusted_level)}",)
@@ -86,16 +88,11 @@ async def on_volume_change(absolute_volume, reference_volume, initial_speaker_le
     adjustment_factor = calculate_adjustment(absolute_volume, reference_volume)
     
     if latest_adjustment != adjustment_factor:
-        print(f"Applying surround/height boost correction: {round(adjustment_factor * 2) / 2}dB based on main volume: {absolute_volume}dB vs reference volume: {reference_volume}dB")
+        logger.info(f"Applying surround/height boost correction: {round(adjustment_factor * 2) / 2}dB based on main volume: {absolute_volume}dB vs reference volume: {reference_volume}dB")
         await adjust_speaker_volumes(initial_speaker_levels, adjustment_factor, send_adjustments)
         latest_adjustment = adjustment_factor
     else:
-        print(f'No adjustment needed. Calculated adjustment factor is the same as previous volume: {adjustment_factor}dB')
-
-    # if abs(adjustment_factor) >= 0.5:
-    #     await adjust_speaker_volumes(initial_speaker_levels, adjustment_factor, send_adjustments)
-    # else:
-    #     print(f'No adjustment needed. Calculated adjustment factor: {adjustment_factor}dB')
+        logger.info(f'No adjustment needed. Calculated adjustment factor is the same as previous volume: {adjustment_factor}dB')
 
 # Example usage when volume change callback is triggered:
 async def handle_volume_change_callback(absolute_volume, json_data, send_adjustments):
@@ -105,4 +102,4 @@ async def handle_volume_change_callback(absolute_volume, json_data, send_adjustm
         initial_speaker_levels = get_speaker_levels(json_data)
         await on_volume_change(absolute_volume, reference_volume, initial_speaker_levels, send_adjustments)
     else:
-        print("Reference volume not found in title")
+        logger.warning("Reference volume not found in title")

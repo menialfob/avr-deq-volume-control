@@ -4,7 +4,7 @@ import aiofiles
 import logging
 
 # Set up logging for error and info messages
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 async def load_json_data(config_path):
     try:
@@ -23,7 +23,7 @@ async def load_json_data(config_path):
         json_file = next((file for file in files if file.startswith('manualREW') and file.endswith('.ady')), None)
         
         if not json_file:
-            logging.error('Error loading calibration file: No file starting with "manualREW" and ending with ".ady" found.')
+            logger.error('Error loading calibration file: No file starting with "manualREW" and ending with ".ady" found.')
             return None
 
         # Full path to the JSON file
@@ -35,12 +35,12 @@ async def load_json_data(config_path):
 
         # Parse the JSON data
         json_data = json.loads(file_data)
-        logging.info('Loaded calibration file.')
+        logger.info('Loaded calibration file.')
 
         return json_data
 
     except Exception as err:
-        logging.error('Error loading calibration file: %s', err)
+        logger.error('Error loading calibration file: %s', err)
         return None
 
 import re
@@ -100,6 +100,6 @@ def get_speaker_levels(json_data):
                     speaker_levels[command_id] = round(float(custom_level), 1) + 50
                 except ValueError:
                     # Handle the case where custom_level is not a valid float
-                    print(f"Invalid custom level for {command_id}: {custom_level}")
+                    logger.warning(f"Invalid custom level for {command_id}: {custom_level}")
     
     return speaker_levels

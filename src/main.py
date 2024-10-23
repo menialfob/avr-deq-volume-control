@@ -9,6 +9,8 @@ debounce_task = None
 latest_volume = None
 json_data = None
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 async def debounce_send_volume(volume: str, delay: float = 5.0):
     """Debounce the volume and send only the latest after a delay."""
     global debounce_task, latest_volume
@@ -36,12 +38,12 @@ async def delayed_send_volume(delay: float):
         pass
 
 async def send_adjustments(adjustments):
-    print("Sending adjustments")
+    logger.info("Sending adjustments")
     await receiver.async_send_telnet_commands(*adjustments)
 
 # Define the callback function
 async def update_callback(zone, event, parameter):
-    print(f"Zone: {zone}, Event: {event}, Parameter: {parameter}")
+    logger.info(f"Zone: {zone}, Event: {event}, Parameter: {parameter}")
     if zone == "Main" and event == "MV":
 
         await debounce_send_volume(parse_volume(parameter))
@@ -71,7 +73,7 @@ def main():
     try:
         loop.run_forever()
     except KeyboardInterrupt:
-        print("Terminating connection.")
+        logger.info("Terminating connection.")
     finally:
         # Cleanup: close the loop when done
         loop.close()
@@ -80,7 +82,6 @@ def main():
 async def main_async():
     global json_data
 
-    logging.getLogger('denonavr').setLevel(logging.INFO)
     
     # Load the JSON calibration data
     config_path = os.getenv('CONFIG_PATH', 'config')
@@ -92,5 +93,6 @@ async def main_async():
     await setup_volume_monitoring()
 
 if __name__ == "__main__":
+    logger = logging.getLogger(__name__)
     receiver = denonavr.DenonAVR(os.getenv('RECEIVER_IP', '192.168.1.142'))  # Define the receiver
     main()
