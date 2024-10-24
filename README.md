@@ -1,13 +1,14 @@
 # avr-deq-volume-control
 
-`avr-deq-volume-control` is a Python implementation that automatically monitors volume changes on your AV Receiver and adjusts over-corrected channels influenced by the built-in DEQ (Dynamic EQ). The script was originally created by **OCA (ObsessiveCompulsiveAudiophile)**, and this repository adapts and extends his concept into a Python-based tool. 
+`avr-deq-volume-control` is a Python implementation that automatically monitors volume changes on your AV Receiver and adjusts over-corrected channels influenced by the built-in DEQ (Dynamic EQ). The script is meant for use in conjunction with  **OCA's (ObsessiveCompulsiveAudiophile)** A1 EVO Nexus audyssey optimization script. The original Dynamic EQ adjustment script was likewise created by OCA, and this repository merely adapts and extends upon his concept by using a more robust networking library for interacting with the AVR.
 
-- [OCA's Original Script](https://drive.google.com/drive/folders/1hoCVIZSNGvZIflUVULxZk3V2G9-uA8lv)
-- [OCA YouTube Channel](https://www.youtube.com/@ocaudiophile)
+You should watch OCA's [video on how to get started](https://www.youtube.com/watch?v=tNj-nWR-Yyo) with Nexus before using this solution.
 
 ## Features
 - Automatically scans for volume changes on your AV Receiver
 - Adjusts channels that are over-corrected by the built-in DEQ
+- Error handling and retry policy for failed requests
+- Docker implementation
 
 ## Getting Started
 
@@ -15,8 +16,9 @@
 
 Make sure you have the following:
 
-- A marrantz or denon receiver
-- The IP address of the receiver
+- Completed A1 EVO Nexus and generated an .ady file
+- A Marantz or Denon receiver
+- The IP address of the receiver (Found in Network -> Information on the receiver menu or in Windows -> View Network Devices & Computers -> Select your receiver -> Properties)
 
 ### Running with Docker
 
@@ -43,7 +45,7 @@ docker run -d --name avr-control \
     docker compose up
     ```
 
-### Installation
+### Manual installation using Python
 
 1. Clone the repository:
     ```bash
