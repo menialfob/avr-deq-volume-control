@@ -6,8 +6,9 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    volumes:
-      - ./config:/app/config  # Maps your local config directory to /avr-deq/config in the container
     environment:
       CONFIG_PATH: /app/config  # Adjusts the path to the configuration file
       RECEIVER_IP: 192.168.1.142  # Adjusts the IP of the receiver
+    volumes:
+      - ./config:/app/config  # Maps your local config directory to /avr-deq/config in the container
+    restart: unless-stopped
