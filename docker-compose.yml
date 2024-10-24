@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   avr-control:
-    image: avrdeqvolumecontrol:latest
+    image: ghcr.io/menialfob/avr-deq-volume-control:latest
     logging:
       driver: json-file
       options:
