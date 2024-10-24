@@ -18,6 +18,16 @@ Make sure you have the following:
 - A marrantz or denon receiver
 - The IP address of the receiver
 
+### Running with Docker
+
+```bash
+docker run -d --name avr-control \
+  -v $(pwd)/config:/app/config \
+  -e CONFIG_PATH=/app/config \
+  -e RECEIVER_IP=<RECEIVER_IP_ADDRESS>\
+  ghcr.io/menialfob/avr-deq-volume-control:latest
+```
+
 ### Running with Docker Compose
 
 1. Ensure Docker and Docer Compose is installed
