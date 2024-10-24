@@ -20,7 +20,7 @@ async def load_json_data(config_path):
         files = os.listdir(config_path)
         
         # Find the first file that matches the criteria
-        json_file = next((file for file in files if file.startswith('manualREW') and file.endswith('.ady')), None)
+        json_file = next((file for file in files if file.endswith('.ady')), None)
         
         if not json_file:
             logger.error('Error loading calibration file: No file starting with "manualREW" and ending with ".ady" found.')
