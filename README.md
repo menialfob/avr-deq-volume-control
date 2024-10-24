@@ -13,11 +13,12 @@
 
 ### Prerequisites
 
-Make sure you have the following installed:
+Make sure you have the following:
 
 - Python 3.x
 - Required Python libraries, which can be installed via `pip` (see [Installation](#installation) below)
-- A compatible AV Receiver supporting DEQ and volume status monitoring
+- A marrantz or denon receiver
+- The IP address of the receiver
 
 ### Installation
 
@@ -39,6 +40,17 @@ Make sure you have the following installed:
     python .src/main.py
     ```
 
+### Running with Docker Compose
+
+1. Ensure Docker and Docer Compose is installed
+
+2. Create or copy the docker-compose.yml file from this repo
+
+3. Build and run the docker file
+   ```bash
+    docker compose up
+    ```
+
 ### Usage
 
 - Once the script is running, it will automatically monitor your AV Receiver for any volume changes and apply adjustments accordingly. 
@@ -46,18 +58,15 @@ Make sure you have the following installed:
 
 ### Configuration
 
-You can customize the behavior of the script by modifying the configuration file `config.yaml` (if available) or by passing certain parameters directly in the script. Some typical configurations include:
-
-- **Receiver IP Address**: The network IP address of your AV Receiver.
-- **Adjustment Sensitivity**: How aggressively the tool should compensate for over-corrected channels.
-- **Logging Level**: Adjust the level of logging to monitor the script's actions in real-time.
+You need to set two environment variables to make it run properly:
+- CONFIG_PATH (Relative path to the folder where your .ady file is stored)
+- RECEIVER_IP (IP Address of the AVR)
 
 ### Troubleshooting
 
 If you encounter issues with the tool, verify the following:
 - The AV Receiver is properly connected to your network.
-- Your Python environment has all necessary dependencies installed.
-- Ensure the correct IP address and settings for your receiver are specified in the configuration.
+- Ensure you have the correct IP address of the receiver
 
 ## Contributions
 
