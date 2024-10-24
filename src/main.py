@@ -47,7 +47,6 @@ async def update_callback(zone, event, parameter):
     if zone == "Main" and event == "MV":
 
         await debounce_send_volume(parse_volume(parameter))
-        # await handle_volume_change_callback(absolute_volume, json_data, send_adjustments)
 
 # Function to set up the AVR connection and register callback
 async def setup_volume_monitoring():
