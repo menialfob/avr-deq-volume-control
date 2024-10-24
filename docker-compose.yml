@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   avr-control:
     image: ghcr.io/menialfob/avr-deq-volume-control:latest
