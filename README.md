@@ -38,7 +38,7 @@ docker run -d --name avr-control \
 
 ### Running with Docker Compose
 
-1. Ensure Docker and Docer Compose is installed
+1. Ensure Docker and Docker Compose is installed
 
 2. Create or copy the docker-compose.yml file from this repo
 
