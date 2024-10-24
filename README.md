@@ -15,10 +15,21 @@
 
 Make sure you have the following:
 
-- Python 3.x
-- Required Python libraries, which can be installed via `pip` (see [Installation](#installation) below)
 - A marrantz or denon receiver
 - The IP address of the receiver
+
+### Running with Docker Compose
+
+1. Ensure Docker and Docer Compose is installed
+
+2. Create or copy the docker-compose.yml file from this repo
+
+3. Edit the docker-compose file to set the environment variables with your receiver's IP and .ady location
+
+4. Build and run the docker file
+   ```bash
+    docker compose up
+    ```
 
 ### Installation
 
@@ -38,17 +49,6 @@ Make sure you have the following:
 4. Run the script:
     ```bash
     python .src/main.py
-    ```
-
-### Running with Docker Compose
-
-1. Ensure Docker and Docer Compose is installed
-
-2. Create or copy the docker-compose.yml file from this repo
-
-3. Build and run the docker file
-   ```bash
-    docker compose up
     ```
 
 ### Usage
