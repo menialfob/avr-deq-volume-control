@@ -25,6 +25,9 @@ Make sure you have the following:
 
 ### Running with Docker
 
+Add the manualREW.ady file in a folder named "config" next to where you are running the command from
+If you want to place it somewhere else, then change the volume (-v) parameter below.
+
 ```bash
 docker run -d --name avr-control \
   -v $(pwd)/config:/app/config \
