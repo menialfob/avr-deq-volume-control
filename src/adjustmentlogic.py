@@ -49,7 +49,6 @@ def calculate_adjustment(absolute_volume, reference_volume):
         adjustment_factor = (abs(reference_volume - 55) * 2) * 0.1 + (abs(55 - 50) * 2) * 0.25 + (abs(50 - 49) * 2) * 0.5
     
     return round(-adjustment_factor * 2) / 2
-    # return round(adjustment_factor * 2) / 2
 
 # Function to apply volume adjustment to the speakers
 async def adjust_speaker_volumes(initial_speaker_levels, adjustment_factor, send_adjustments):
