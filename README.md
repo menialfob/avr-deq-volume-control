@@ -1,6 +1,9 @@
 # avr-deq-volume-control
 
-`avr-deq-volume-control` is a Python implementation that automatically monitors volume changes on your AV Receiver and adjusts over-corrected channels influenced by the built-in DEQ (Dynamic EQ). The script is meant for use in conjunction with  **OCA's (ObsessiveCompulsiveAudiophile)** A1 EVO Nexus audyssey optimization script. The original Dynamic EQ adjustment script was likewise created by OCA, and this repository merely adapts and extends upon his concept by using a more robust networking library for interacting with the AVR.
+`avr-deq-volume-control` is a Python implementation that automatically monitors volume changes on your AV Receiver and adjusts over-corrected channels influenced by the built-in DEQ (Dynamic EQ). 
+
+The script is meant for use in conjunction with  **OCA's (ObsessiveCompulsiveAudiophile)** A1 EVO Nexus audyssey optimization script. 
+The original Dynamic EQ adjustment script was likewise created by OCA, and this repository merely adapts and extends upon his concept by using a more robust networking library for interacting with the AVR.
 
 You should watch OCA's [video on how to get started](https://www.youtube.com/watch?v=tNj-nWR-Yyo) with Nexus before using this solution.
 
