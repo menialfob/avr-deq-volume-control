@@ -1,2 +1,2 @@
-aiofiles
-denonavr
+aiofiles==24.1.0
+denonavr==1.0.0
