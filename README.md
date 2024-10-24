@@ -24,9 +24,11 @@ Make sure you have the following:
 
 2. Create or copy the docker-compose.yml file from this repo
 
-3. Edit the docker-compose file to set the environment variables with your receiver's IP and .ady location
+3. Edit the docker-compose file to set the environment variables with your receiver's IP and .ady location (Default in /config)
 
-4. Build and run the docker file
+4. Copy the .ady file to your set location from step 3
+
+5. Build and run the docker file
    ```bash
     docker compose up
     ```
