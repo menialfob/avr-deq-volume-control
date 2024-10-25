@@ -19,6 +19,7 @@ You should watch OCA's [video on how to get started](https://www.youtube.com/wat
 
 Make sure you have the following:
 
+- Python 3.10 or higher (if not using docker)
 - Completed A1 EVO Nexus and generated an .ady file
 - A Marantz or Denon receiver
 - The IP address of the receiver (Found in Network -> Information on the receiver menu or in Windows -> View Network Devices & Computers -> Select your receiver -> Properties)
