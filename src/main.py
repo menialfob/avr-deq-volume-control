@@ -4,10 +4,12 @@ from adjustmentlogic import handle_volume_change_callback, parse_volume, adjust_
 from json_loader import load_json_data, get_speaker_levels
 import logging
 import os
+import signal
 
 debounce_task = None
 latest_volume = None
 json_data = None
+shutdown_flag = False
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -61,6 +63,12 @@ async def reset_speaker_volume(json_data):
     initial_speaker_levels = get_speaker_levels(json_data)
     await adjust_speaker_volumes(initial_speaker_levels, 0, send_adjustments, True)
 
+async def handle_shutdown(loop, signame=None):
+    global shutdown_flag
+    if signame:
+        logger.info(signame)
+    shutdown_flag = True
+
 # Main entry point
 def main():
     try:
@@ -70,19 +78,31 @@ def main():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
+    # Set signal handlers
+    for signame in {'SIGINT', 'SIGTERM'}:
+        logger.info("Signame")
+        loop.add_signal_handler(getattr(signal, signame), 
+                                lambda signame=signame: asyncio.create_task(handle_shutdown(loop,signame)))
+
     # Run the setup asynchronously and register the callback
     loop.run_until_complete(main_async())
 
     # Now keep the loop running to listen for events
     try:
-        loop.run_forever()
-    except KeyboardInterrupt:
-        logger.info("Keyboard interrupt detected. Terminating connection.")
+        while not shutdown_flag:
+            loop.run_until_complete(asyncio.sleep(1))  # Run loop with periodic sleep checks
     finally:
+        logger.info("Shutdown command received")
+        logger.info("Resetting volumes to initial")
+
         # Resetting speaker levels with the same loop
         loop.run_until_complete(reset_speaker_volume(json_data))  
-        # Cleanup: close the loop when done
+
+        # Cleaning up and shutting down
+        loop.stop()
+        loop.run_until_complete(loop.shutdown_asyncgens())
         loop.close()
+
 
 # Function to run the async tasks
 async def main_async():
