@@ -80,7 +80,6 @@ def main():
 
     # Set signal handlers
     for signame in {'SIGINT', 'SIGTERM'}:
-        logger.info("Signame")
         loop.add_signal_handler(getattr(signal, signame), 
                                 lambda signame=signame: asyncio.create_task(handle_shutdown(loop,signame)))
 
