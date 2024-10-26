@@ -43,7 +43,7 @@ docker run -d --name avr-control \
 
 2. Create or copy the docker-compose.yml file from this repo
 
-3. Edit the docker-compose file to set the environment variables with your receiver's IP and .ady location (Default in /config)
+3. Edit the docker-compose file to set the environment variables with your receiver's IP
 
 4. Copy the .ady file to your set location from step 3
 
@@ -67,10 +67,39 @@ docker run -d --name avr-control \
 
 3. Copy the .ady file created by OCA's Nexus to the /config folder.
 
-4. Run the script:
+4. Set the required environment variables:
+    #### Windows
+    ```bash
+    set RECEIVER_IP=<IP of your receiver>
+    ```
+    #### Unix (MacOS & Linux)
+    ```bash
+    export RECEIVER_IP=<IP of your receiver>
+    ```
+
+5. Run the script:
     ```bash
     python .src/main.py
     ```
+### Additional features
+
+#### Overriding the default adjustment setup
+You can set the environment variable SPEAKER_CONFIG to override the default speaker adjustments. The SPEAKER_CONFIG has to be formatted in the following way:
+```bash
+SPEAKER_CONFIG='{"half": ["SL", "SR", "SBL", "SBR", "SB"], "quarter": ["FHL", "FHR", "FWL", "FWR", "TFL", "TFR", "TML", "TMR", "TRL", "TRR", "RHL", "RHR", "FDL", "FDR", "SDL", "SDR", "BDL", "BDR", "SHL", "SHR", "TS", "CH"]}'
+```
+
+For example, if you only want to adjust SL and SR by a quarter and nothing else, the variable would look like this:
+```bash
+SPEAKER_CONFIG='{"half": ["SL", "SR"], "quarter": []}'
+```
+
+See the docker-compose.yml file for an example of how this is implemented.
+
+#### Defining where to look for the .ady file
+You can set the environment variable CONFIG_PATH to change where it looks for the .ady file. The default location is ./config
+
+See the docker-compose.yml file for an example of how this is implemented.
 
 ### Usage
 
@@ -100,4 +129,3 @@ This project is licensed under the MIT License.
 ---
 
 Original script created by **ObsessiveCompulsiveAudiophile**. For more information, check out his [YouTube channel](https://www.youtube.com/@ocaudiophile).
-

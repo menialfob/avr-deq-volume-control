@@ -1,14 +1,16 @@
 services:
   avr-control:
     image: ghcr.io/menialfob/avr-deq-volume-control:latest
+    container_name: avr-control
     logging:
       driver: json-file
       options:
         max-size: "10m"
         max-file: "3"
     environment:
-      CONFIG_PATH: /app/config  # Adjusts the path to the configuration file
+      CONFIG_PATH: /app/config  # (Optional) Adjusts the path to the configuration file
       RECEIVER_IP: 192.168.1.142  # Adjusts the IP of the receiver
+      SPEAKER_CONFIG: '{"half": ["SR", "SL"], "quarter": []}'
     volumes:
       - ./config:/app/config  # Maps your local config directory to /avr-deq/config in the container
     restart: unless-stopped

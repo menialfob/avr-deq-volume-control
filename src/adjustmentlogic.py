@@ -1,14 +1,37 @@
-from json_loader import get_reference_volume, get_speaker_levels
+import os
+import json
 import logging
+from json_loader import get_reference_volume, get_speaker_levels
 
 logger = logging.getLogger(__name__)
 
-MIN_LEVEL = 38
-MAX_LEVEL = 62
 latest_adjustment = None
 
-half_change_speakers = {'SL', 'SR', 'SBL', 'SBR', 'SB'}
-quarter_change_speakers = {'FHL', 'FHR', 'FWL', 'FWR', 'TFL', 'TFR', 'TML', 'TMR', 'TRL', 'TRR', 'RHL', 'RHR', 'FDL', 'FDR', 'SDL', 'SDR', 'BDL', 'BDR', 'SHL', 'SHR', 'TS', 'CH'}
+MIN_LEVEL = 38
+MAX_LEVEL = 62
+
+half_change_speakers = {}
+quarter_change_speakers = {}
+
+
+def load_speaker_config():
+
+    default_speaker_config = json.dumps({
+        "half": ["SL", "SR", "SBL", "SBR", "SB"],
+        "quarter": ["FHL", "FHR", "FWL", "FWR", "TFL", "TFR", "TML", "TMR", "TRL", "TRR", "RHL", "RHR", "FDL", "FDR", "SDL", "SDR", "BDL", "BDR", "SHL", "SHR", "TS", "CH"]
+    })
+
+    speaker_config_json = os.getenv('SPEAKER_CONFIG', default_speaker_config)
+    speaker_config = json.loads(speaker_config_json)
+
+    half_change_speakers = set(speaker_config.get("half", []))
+    quarter_change_speakers = set(speaker_config.get("quarter", []))
+
+    overlap = half_change_speakers.intersection(quarter_change_speakers)
+    if overlap:
+        raise ValueError(f"Invalid configuration: Overlap detected in speaker sets. Conflicting speakers: {overlap}")
+
+    return half_change_speakers, quarter_change_speakers
 
 def format_volume(db_volume: float) -> str:
     """
@@ -51,24 +74,31 @@ def calculate_adjustment(absolute_volume, reference_volume):
     return round(-adjustment_factor * 2) / 2
 
 # Function to apply volume adjustment to the speakers
-async def adjust_speaker_volumes(initial_speaker_levels, adjustment_factor, send_adjustments):
+async def adjust_speaker_volumes(initial_speaker_levels, adjustment_factor, send_adjustments, reset: bool):
 
     adjustments = []  # List to store the formatted adjustment strings as tuples
+    adjustment_type = None
 
     logger.info(f"Adjustment factor: {adjustment_factor}")
     for speaker, initial_level in initial_speaker_levels.items():
-        if speaker in quarter_change_speakers:
-            quarter_adjustment_factor = round(adjustment_factor * 0.5 * 2) / 2
-            # quarter_adjustment_factor = (round(adjustment_factor * 0.5 * 2) / 2)
-            adjusted_level = initial_level + quarter_adjustment_factor
-        else:
+        if reset == True:
+            adjustment_type = "Resetting adjustment"
             adjusted_level = initial_level + adjustment_factor
+        elif speaker in quarter_change_speakers:
+            adjustment_type = "Quarter adjustment"
+            quarter_adjustment_factor = round(adjustment_factor * 0.5 * 2) / 2
+            adjusted_level = initial_level + quarter_adjustment_factor
+        elif speaker in half_change_speakers:
+            adjustment_type = "Half adjustment"
+            adjusted_level = initial_level + adjustment_factor
+        else:
+            continue
         
         # Cap and round new level
         adjusted_level = max(MIN_LEVEL, min(MAX_LEVEL, (round(adjusted_level * 2) / 2))) 
 
         # Info about what changes we are doing
-        logger.info(f'{speaker}: Initial {initial_level - 50}dB, Adjustment {adjusted_level - initial_level}dB, Final {adjusted_level - 50}dB')
+        logger.info(f'{speaker}: {adjustment_type}, Initial {initial_level - 50}dB, Adjustment {adjusted_level - initial_level}dB, Final {adjusted_level - 50}dB')
 
         # Format the adjustments for sending via telnet
         adjustments.append(f"SSLEV{speaker} {format_volume(adjusted_level)}",)
@@ -88,14 +118,22 @@ async def on_volume_change(absolute_volume, reference_volume, initial_speaker_le
     
     if latest_adjustment != adjustment_factor:
         logger.info(f"Applying surround/height boost correction: {round(adjustment_factor * 2) / 2}dB based on main volume: {absolute_volume}dB vs reference volume: {reference_volume}dB")
-        await adjust_speaker_volumes(initial_speaker_levels, adjustment_factor, send_adjustments)
+        await adjust_speaker_volumes(initial_speaker_levels, adjustment_factor, send_adjustments, False)
         latest_adjustment = adjustment_factor
     else:
         logger.info(f'No adjustment needed. Calculated adjustment factor is the same as previous volume: {adjustment_factor}dB')
 
 # Example usage when volume change callback is triggered:
 async def handle_volume_change_callback(absolute_volume, json_data, send_adjustments):
+    global half_change_speakers
+    global quarter_change_speakers
+
     reference_volume = get_reference_volume(json_data)
+
+    try:
+        half_change_speakers, quarter_change_speakers = load_speaker_config()
+    except ValueError as e:
+        logger.error(e)
     
     if reference_volume is not None:
         initial_speaker_levels = get_speaker_levels(json_data)

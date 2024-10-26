@@ -59,7 +59,7 @@ async def setup_volume_monitoring():
 async def reset_speaker_volume(json_data):
     logger.info("Resetting speaker volumes to initial levels")
     initial_speaker_levels = get_speaker_levels(json_data)
-    await adjust_speaker_volumes(initial_speaker_levels, 0, send_adjustments)
+    await adjust_speaker_volumes(initial_speaker_levels, 0, send_adjustments, True)
 
 # Main entry point
 def main():
@@ -87,7 +87,6 @@ def main():
 # Function to run the async tasks
 async def main_async():
     global json_data
-
     
     # Load the JSON calibration data
     config_path = os.getenv('CONFIG_PATH', 'config')
@@ -98,5 +97,10 @@ async def main_async():
 
 if __name__ == "__main__":
     logger = logging.getLogger(__name__)
-    receiver = denonavr.DenonAVR(os.getenv('RECEIVER_IP', '192.168.1.142'))  # Define the receiver
+    # Get receiver IP from env variable
+    receiver_ip = os.getenv('RECEIVER_IP')
+    # Ensure that config_path is supplied
+    if not receiver_ip:
+        raise ValueError("Receiver IP is required but not provided. To set the environment variable use set RECEIVER_IP=<receiver ip> in Windows or export RECEIVER_IP=<receiver ip> in MacOS or Linux")
+    receiver = denonavr.DenonAVR(receiver_ip)  # Define the receiver
     main()
