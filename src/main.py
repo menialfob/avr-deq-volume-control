@@ -1,7 +1,7 @@
 import asyncio
 import denonavr
-from adjustmentlogic import handle_volume_change_callback, parse_volume, format_volume
-from json_loader import load_json_data
+from adjustmentlogic import handle_volume_change_callback, parse_volume, adjust_speaker_volumes
+from json_loader import load_json_data, get_speaker_levels
 import logging
 import os
 
@@ -56,6 +56,11 @@ async def setup_volume_monitoring():
     
     await receiver.async_update()  # Initial update to get the current state
 
+async def reset_speaker_volume(json_data):
+    logger.info("Resetting speaker volumes to initial levels")
+    initial_speaker_levels = get_speaker_levels(json_data)
+    await adjust_speaker_volumes(initial_speaker_levels, 0, send_adjustments)
+
 # Main entry point
 def main():
     try:
@@ -72,8 +77,10 @@ def main():
     try:
         loop.run_forever()
     except KeyboardInterrupt:
-        logger.info("Terminating connection.")
+        logger.info("Keyboard interrupt detected. Terminating connection.")
     finally:
+        # Resetting speaker levels with the same loop
+        loop.run_until_complete(reset_speaker_volume(json_data))  
         # Cleanup: close the loop when done
         loop.close()
 
@@ -84,8 +91,6 @@ async def main_async():
     
     # Load the JSON calibration data
     config_path = os.getenv('CONFIG_PATH', 'config')
-    if not config_path:
-        raise ValueError("CONFIG_PATH environment variable is not set.")
     json_data = await load_json_data(config_path)
 
     # Set up AVR with the loaded JSON data
