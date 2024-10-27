@@ -89,7 +89,7 @@ You can set the environment variable SPEAKER_CONFIG to override the default spea
 SPEAKER_CONFIG='{"half": ["SL", "SR", "SBL", "SBR", "SB"], "quarter": ["FHL", "FHR", "FWL", "FWR", "TFL", "TFR", "TML", "TMR", "TRL", "TRR", "RHL", "RHR", "FDL", "FDR", "SDL", "SDR", "BDL", "BDR", "SHL", "SHR", "TS", "CH"]}'
 ```
 
-For example, if you only want to adjust SL and SR by a quarter and nothing else, the variable would look like this:
+For example, if you only want to adjust SL and SR by half and nothing else, the variable would look like this:
 ```bash
 SPEAKER_CONFIG='{"half": ["SL", "SR"], "quarter": []}'
 ```
