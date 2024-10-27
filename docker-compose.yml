@@ -1,7 +1,6 @@
 services:
   avr-control:
-    # image: ghcr.io/menialfob/avr-deq-volume-control:latest
-    image: avrdeqvolumecontrol:dev17
+    image: ghcr.io/menialfob/avr-deq-volume-control:latest
     container_name: avr-control
     logging:
       driver: json-file
