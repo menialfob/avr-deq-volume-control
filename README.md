@@ -83,6 +83,19 @@ docker run -d --name avr-control \
     ```
 ### Additional features
 
+### Resetting to initial values
+If you exit the application with Ctrl+C, the initial unadjusted speaker volumes will be set, meaning the values would be set as if this application had not been run. Be aware that Docker won't output the logs of the reset action to the console after clicking Ctrl+C, but the reset action is still happening. You can see the logs of the actions after Ctrl+C by using:
+
+Docker:
+```bash
+Docker logs <container name>
+```
+
+Docker compose:
+```bash
+Docker compose logs
+```
+
 #### Overriding the default adjustment setup
 You can set the environment variable SPEAKER_CONFIG to override the default speaker adjustments. The SPEAKER_CONFIG has to be formatted in the following way:
 ```bash
