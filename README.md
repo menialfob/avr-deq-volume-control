@@ -108,9 +108,16 @@ See the docker-compose.yml file for an example of how this is implemented.
 
 ### Configuration
 
-You need to set two environment variables to make it run properly:
-- CONFIG_PATH (Relative path to the folder where your .ady file is stored)
-- RECEIVER_IP (IP Address of the AVR)
+You need to set three environment variables to make it run properly:
+- RECEIVER_IP (Required) - IP Address of the AVR
+- CONFIG_PATH (Optional) (Default: /config) Relative path to the folder where your .ady file is stored. Only relevant when not using Docker.
+- SPEAKER_CONFIG (Optional) (Default: See below) Overrides the default speaker adjustments.
+
+SPEAKER_CONFIG default values (Used if env variable is not set):
+```bash
+SPEAKER_CONFIG='{"half": ["SL", "SR", "SBL", "SBR", "SB"], "quarter": ["FHL", "FHR", "FWL", "FWR", "TFL", "TFR", "TML", "TMR", "TRL", "TRR", "RHL", "RHR", "FDL", "FDR", "SDL", "SDR", "BDL", "BDR", "SHL", "SHR", "TS", "CH"]}'
+```
+
 
 ### Troubleshooting
 
