@@ -32,7 +32,6 @@ If you want to place it somewhere else, then change the volume (-v) parameter be
 ```bash
 docker run -d --name avr-control \
   -v $(pwd)/config:/app/config \
-  -e CONFIG_PATH=/app/config \
   -e RECEIVER_IP=<RECEIVER_IP_ADDRESS>\
   ghcr.io/menialfob/avr-deq-volume-control:latest
 ```
