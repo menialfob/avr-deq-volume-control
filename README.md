@@ -32,6 +32,7 @@ If you want to place it somewhere else, then change the volume (-v) parameter be
 ```bash
 docker run -d --name avr-control \
   -v $(pwd)/config:/app/config \
+  -e CONFIG_PATH=/app/config\
   -e RECEIVER_IP=<RECEIVER_IP_ADDRESS>\
   ghcr.io/menialfob/avr-deq-volume-control:latest
 ```
@@ -110,6 +111,11 @@ See the docker-compose.yml file for an example of how this is implemented.
 
 #### Defining where to look for the .ady file
 You can set the environment variable CONFIG_PATH to change where it looks for the .ady file. The default location is ./config
+
+See the docker-compose.yml file for an example of how this is implemented.
+
+#### Manually setting reference volume
+You can manually define the reference volume used for calculations by setting the REFERENCE_VOLUME env variable.
 
 See the docker-compose.yml file for an example of how this is implemented.
 
