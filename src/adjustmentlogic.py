@@ -128,8 +128,15 @@ async def handle_volume_change_callback(absolute_volume, json_data, send_adjustm
     global half_change_speakers
     global quarter_change_speakers
 
-    reference_volume = get_reference_volume(json_data)
-
+    # Try to get the REFERENCE_VOLUME environment variable as an integer
+    reference_volume_env = os.getenv('REFERENCE_VOLUME')
+    if reference_volume_env and reference_volume_env.isdigit():
+        reference_volume = int(reference_volume_env)
+        logger.info("Retrieving reference volume from environment variable")
+    else:
+        # Fallback if REFERENCE_VOLUME is empty or not a valid integer
+        reference_volume = get_reference_volume(json_data)
+        logger.info("Retrieving reference volume from ady file")
     try:
         half_change_speakers, quarter_change_speakers = load_speaker_config()
     except ValueError as e:
@@ -139,4 +146,4 @@ async def handle_volume_change_callback(absolute_volume, json_data, send_adjustm
         initial_speaker_levels = get_speaker_levels(json_data)
         await on_volume_change(absolute_volume, reference_volume, initial_speaker_levels, send_adjustments)
     else:
-        logger.warning("Reference volume not found in title")
+        logger.error("Reference volume not found")

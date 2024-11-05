@@ -15,7 +15,7 @@ tasks = set()  # Set to track ongoing tasks
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-async def debounce_send_volume(volume: str, delay: float = 5.0):
+async def debounce_send_volume(volume: str, delay: float = 2.0):
     """Debounce the volume and send only the latest after a delay."""
     global debounce_task, latest_volume
     latest_volume = volume
@@ -33,7 +33,7 @@ async def delayed_send_volume(delay: float):
         await asyncio.sleep(delay)
         await handle_volume_change_callback(latest_volume, json_data, send_adjustments)
     except asyncio.CancelledError:
-        logging.info("Delayed volume send task was cancelled.")
+        logger.debug("Volume send task was cancelled.")
 
 async def send_adjustments(adjustments, force_send=False):
     logger.info("Sending adjustments")

@@ -23,7 +23,7 @@ async def load_json_data(config_path):
         json_file = next((file for file in files if file.endswith('.ady')), None)
         
         if not json_file:
-            logger.error('Error loading calibration file: No file starting with "manualREW" and ending with ".ady" found.')
+            logger.error('Error loading calibration file: No file ending with ".ady" found.')
             return None
 
         # Full path to the JSON file
@@ -59,7 +59,7 @@ def get_reference_volume(json_data):
     title = json_data.get('title', '')
     
     # Improved regex to handle optional spaces between 'MV' and 'dB'
-    match = re.search(r'MV\s*(-?\d+)\s*dB', title)
+    match = re.search(r'MV(\d+)dB', title)
     
     # Returning None if no match is found, otherwise converting the match to an integer
     return int(match.group(1)) if match else None
