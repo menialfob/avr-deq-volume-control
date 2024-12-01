@@ -118,7 +118,7 @@ async def main_async():
     global json_data
     
     # Load the JSON calibration data
-    config_path = os.getenv('CONFIG_PATH', 'config')
+    config_path = os.getenv('CONFIG_PATH', '/app/config')
     json_data = await load_json_data(config_path)
 
     # Set up AVR with the loaded JSON data
