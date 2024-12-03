@@ -1,5 +1,5 @@
 #
-name: Publish Docker image for non-main branch
+name: Create and publish a Docker image
 
 # Configures this workflow to run every time a commit is pushed to non-main branch
 on:
