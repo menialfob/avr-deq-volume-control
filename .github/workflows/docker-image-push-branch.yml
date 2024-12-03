@@ -1,10 +1,11 @@
 #
 name: Create and publish a Docker image
 
-# Configures this workflow to run every time a change is pushed to the branch called `release`.
+# Configures this workflow to run every time a commit is pushed to non-main branch
 on:
-  release:
-    types: [published]
+  push:
+    branches-ignore:
+      - main
 
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
@@ -45,7 +46,7 @@ jobs:
             type=ref,event=branch
             type=semver,pattern={{version}}
             type=sha
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value={{branch}}
           flavor: |
             latest=false
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
