@@ -88,29 +88,41 @@ def parse_volume(mv_value: int) -> float:
 
 # Function to calculate the adjustment factor based on current and reference volume
 def calculate_adjustment(absolute_volume, reference_volume):
+    # adjustment_factor = 0
+    # if absolute_volume >= reference_volume:
+    #     return 0
+    # elif absolute_volume >= 55:
+    #     adjustment_factor = (abs(reference_volume - absolute_volume) * 2) * 0.1
+    # elif absolute_volume >= 50:
+    #     adjustment_factor = (abs(reference_volume - 55) * 2) * 0.1 + (abs(55 - absolute_volume) * 2) * 0.25
+    # elif absolute_volume >= 49:
+    #     adjustment_factor = (abs(reference_volume - 55) * 2) * 0.1 + (abs(55 - 50) * 2) * 0.25 + (abs(50 - max(absolute_volume, 49)) * 2) * 0.5
+    # else:
+    #     adjustment_factor = (abs(reference_volume - 55) * 2) * 0.1 + (abs(55 - 50) * 2) * 0.25 + (abs(50 - 49) * 2) * 0.5
+
+    # return round(-adjustment_factor * 2) / 2
+
     adjustment_factor = 0
+
     if absolute_volume >= reference_volume:
         return 0
     elif absolute_volume >= 55:
-        adjustment_factor = (abs(reference_volume - absolute_volume) * 2) * 0.1
+        adjustment_factor = 0.2 * absolute_volume - 7.5
     elif absolute_volume >= 50:
-        adjustment_factor = (abs(reference_volume - 55) * 2) * 0.1 + (
-            abs(55 - absolute_volume) * 2
-        ) * 0.25
-    elif absolute_volume >= 49:
-        adjustment_factor = (
-            (abs(reference_volume - 55) * 2) * 0.1
-            + (abs(55 - 50) * 2) * 0.25
-            + (abs(50 - max(absolute_volume, 49)) * 2) * 0.5
-        )
+        adjustment_factor = 0.5 * absolute_volume - 24
+    elif absolute_volume > 49:
+        adjustment_factor = 0.5
     else:
-        adjustment_factor = (
-            (abs(reference_volume - 55) * 2) * 0.1
-            + (abs(55 - 50) * 2) * 0.25
-            + (abs(50 - 49) * 2) * 0.5
-        )
+        adjustment_factor = 0
 
-    return round(-adjustment_factor * 2) / 2
+    # Subtract the boosted value from the reference value informed amount
+    adjustment_factor = calculate_reference(reference_volume) - adjustment_factor
+
+    # Round to nearest 0.5
+    adjustment_factor = round(adjustment_factor * 2) / 2
+
+    # Negative values not allowed
+    adjustment_factor = max(adjustment_factor, 0)
 
 
 # Function to apply volume adjustment to the speakers
