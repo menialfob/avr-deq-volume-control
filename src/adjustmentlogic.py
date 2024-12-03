@@ -57,6 +57,9 @@ def parse_volume(mv_value: int) -> float:
     """
     return float(mv_value) / 10 if len(mv_value) == 3 else float(mv_value)
 
+def calculate_reference(reference_volume):
+    return ((reference_volume - 50) / 5) + 2.5
+
 # Function to calculate the adjustment factor based on current and reference volume
 def calculate_adjustment(absolute_volume, reference_volume):
     adjustment_factor = 0
