@@ -57,24 +57,13 @@ def parse_volume(mv_value: int) -> float:
     """
     return float(mv_value) / 10 if len(mv_value) == 3 else float(mv_value)
 
-def calculate_reference(reference_volume):
-    return ((reference_volume - 50) / 5) + 2.5
+def calculate_max_correction(reference_volume):
+
+    # The sum of the adjustments from all the volume ranges below the reference volume down to the minimum volume
+    return 0.2 * (reference_volume - 55) + 3.5
 
 # Function to calculate the adjustment factor based on current and reference volume
 def calculate_adjustment(absolute_volume, reference_volume):
-    # adjustment_factor = 0
-    # if absolute_volume >= reference_volume:
-    #     return 0
-    # elif absolute_volume >= 55:
-    #     adjustment_factor = (abs(reference_volume - absolute_volume) * 2) * 0.1
-    # elif absolute_volume >= 50:
-    #     adjustment_factor = (abs(reference_volume - 55) * 2) * 0.1 + (abs(55 - absolute_volume) * 2) * 0.25
-    # elif absolute_volume >= 49:
-    #     adjustment_factor = (abs(reference_volume - 55) * 2) * 0.1 + (abs(55 - 50) * 2) * 0.25 + (abs(50 - max(absolute_volume, 49)) * 2) * 0.5
-    # else:
-    #     adjustment_factor = (abs(reference_volume - 55) * 2) * 0.1 + (abs(55 - 50) * 2) * 0.25 + (abs(50 - 49) * 2) * 0.5
-    
-    # return round(-adjustment_factor * 2) / 2
     
     adjustment_factor = 0
 
@@ -89,8 +78,8 @@ def calculate_adjustment(absolute_volume, reference_volume):
     else:
         adjustment_factor = 0
 
-    # Subtract the boosted value from the reference value informed amount
-    adjustment_factor = calculate_reference(reference_volume) - adjustment_factor
+    # Subtract the boosted value from the maximum correction dB
+    adjustment_factor = calculate_max_correction(reference_volume) - adjustment_factor
 
     # Round to nearest 0.5
     adjustment_factor = round(adjustment_factor * 2) / 2
