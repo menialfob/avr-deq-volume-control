@@ -1,7 +1,7 @@
 import os
 import json
 import logging
-from json_loader import get_reference_volume, get_speaker_levels
+from .json_loader import get_reference_volume, get_speaker_levels
 
 logger = logging.getLogger(__name__)
 
@@ -87,6 +87,11 @@ def parse_volume(mv_value: int) -> float:
 
 
 def calculate_reference(reference_volume):
+    """
+    The reference volume informed max boosted amount.
+    This is the dB value (Example 5.5 at 65 reference volume) which will be reduced at the lowest relative volumes.
+    The calculate_adjustment function serves to calculate how much less to boost in between this value and the reference volume.
+    """
     return 0.2 * (reference_volume - 55) + 3.5
 
 
@@ -108,10 +113,13 @@ def calculate_adjustment(absolute_volume, reference_volume):
     adjustment_factor = calculate_reference(reference_volume) - adjustment_factor
 
     # Round to nearest 0.5
-    adjustment_factor = round(adjustment_factor * 2) / 2
+    adjustment_factor = int((adjustment_factor * 2) + 0.5) / 2
+    # adjustment_factor = round(adjustment_factor * 2) / 2
 
     # Negative values not allowed
     adjustment_factor = max(adjustment_factor, 0)
+
+    return adjustment_factor
 
 
 # Function to apply volume adjustment to the speakers
