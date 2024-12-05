@@ -14,6 +14,11 @@ half_change_speakers = {}
 quarter_change_speakers = {}
 
 
+def normal_round(unrounded_float):
+    # Python's round() is using bankers rounding. This function implements the good old way of rounding .5 up.
+    return int(unrounded_float + 0.5)
+
+
 def load_speaker_config():
 
     default_speaker_config = json.dumps(
@@ -113,8 +118,7 @@ def calculate_adjustment(absolute_volume, reference_volume):
     adjustment_factor = calculate_reference(reference_volume) - adjustment_factor
 
     # Round to nearest 0.5
-    adjustment_factor = int((adjustment_factor * 2) + 0.5) / 2
-    # adjustment_factor = round(adjustment_factor * 2) / 2
+    adjustment_factor = normal_round(adjustment_factor * 2) / 2
 
     # Negative values not allowed
     adjustment_factor = max(adjustment_factor, 0)
@@ -134,19 +138,21 @@ async def adjust_speaker_volumes(
     for speaker, initial_level in initial_speaker_levels.items():
         if reset == True:
             adjustment_type = "Resetting adjustment"
-            adjusted_level = initial_level + adjustment_factor
+            adjusted_level = initial_level - adjustment_factor
         elif speaker in quarter_change_speakers:
             adjustment_type = "Quarter adjustment"
-            quarter_adjustment_factor = round(adjustment_factor * 0.5 * 2) / 2
-            adjusted_level = initial_level + quarter_adjustment_factor
+            quarter_adjustment_factor = normal_round(adjustment_factor * 0.5 * 2) / 2
+            adjusted_level = initial_level - quarter_adjustment_factor
         elif speaker in half_change_speakers:
             adjustment_type = "Half adjustment"
-            adjusted_level = initial_level + adjustment_factor
+            adjusted_level = initial_level - adjustment_factor
         else:
             continue
 
         # Cap and round new level
-        adjusted_level = max(MIN_LEVEL, min(MAX_LEVEL, (round(adjusted_level * 2) / 2)))
+        adjusted_level = max(
+            MIN_LEVEL, min(MAX_LEVEL, (normal_round(adjusted_level * 2) / 2))
+        )
 
         # Info about what changes we are doing
         logger.info(
@@ -176,7 +182,7 @@ async def on_volume_change(
 
     if latest_adjustment != adjustment_factor:
         logger.info(
-            f"Applying surround/height boost correction: {round(adjustment_factor * 2) / 2}dB based on main volume: {absolute_volume}dB vs reference volume: {reference_volume}dB"
+            f"Applying surround/height boost correction: {normal_round(adjustment_factor * 2) / 2}dB based on main volume: {absolute_volume}dB vs reference volume: {reference_volume}dB"
         )
         await adjust_speaker_volumes(
             initial_speaker_levels, adjustment_factor, send_adjustments, False
