@@ -1,6 +1,7 @@
-import os
 import json
 import logging
+import os
+
 from .json_loader import get_reference_volume, get_speaker_levels
 
 logger = logging.getLogger(__name__)
@@ -20,7 +21,6 @@ def normal_round(unrounded_float):
 
 
 def load_speaker_config():
-
     default_speaker_config = json.dumps(
         {
             "half": ["SL", "SR", "SBL", "SBR", "SB"],
@@ -130,13 +130,12 @@ def calculate_adjustment(absolute_volume, reference_volume):
 async def adjust_speaker_volumes(
     initial_speaker_levels, adjustment_factor, send_adjustments, reset: bool
 ):
-
     adjustments = []  # List to store the formatted adjustment strings as tuples
     adjustment_type = None
 
     logger.info(f"Adjustment factor: {adjustment_factor}")
     for speaker, initial_level in initial_speaker_levels.items():
-        if reset == True:
+        if reset is True:
             adjustment_type = "Resetting adjustment"
             adjusted_level = initial_level - adjustment_factor
         elif speaker in quarter_change_speakers:
@@ -166,7 +165,6 @@ async def adjust_speaker_volumes(
 
     # Send all adjustments after the loop
     if adjustments:
-
         # Send the adjustments
         await send_adjustments(adjustments)
 
@@ -175,7 +173,6 @@ async def adjust_speaker_volumes(
 async def on_volume_change(
     absolute_volume, reference_volume, initial_speaker_levels, send_adjustments
 ):
-
     global latest_adjustment
 
     adjustment_factor = calculate_adjustment(absolute_volume, reference_volume)

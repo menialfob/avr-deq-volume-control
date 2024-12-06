@@ -1,15 +1,17 @@
 import asyncio
-import denonavr
-from adjustmentlogic import (
-    handle_volume_change_callback,
-    parse_volume,
-    adjust_speaker_volumes,
-)
-from json_loader import load_json_data, get_speaker_levels
 import logging
 import os
-import signal
 import platform
+import signal
+
+import denonavr
+
+from adjustmentlogic import (
+    adjust_speaker_volumes,
+    handle_volume_change_callback,
+    parse_volume,
+)
+from json_loader import get_speaker_levels, load_json_data
 
 debounce_task = None
 latest_volume = None
@@ -56,7 +58,6 @@ async def send_adjustments(adjustments, force_send=False):
 async def update_callback(zone, event, parameter):
     logger.info(f"Zone: {zone}, Event: {event}, Parameter: {parameter}")
     if zone == "Main" and event == "MV":
-
         await debounce_send_volume(parse_volume(parameter))
 
 
@@ -73,13 +74,6 @@ async def reset_speaker_volume(json_data):
     logger.info("Resetting speaker volumes to initial levels")
     initial_speaker_levels = get_speaker_levels(json_data)
     await adjust_speaker_volumes(initial_speaker_levels, 0, send_adjustments, True)
-
-
-# async def handle_shutdown(loop, signame=None):
-#     global shutdown_flag
-#     if signame:
-#         logger.info(signame)
-#     shutdown_flag = True
 
 
 async def handle_shutdown(loop, signame=None):
