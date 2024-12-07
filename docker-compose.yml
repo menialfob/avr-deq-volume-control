@@ -10,7 +10,7 @@ services:
     environment:
       RECEIVER_IP: 192.168.1.142  # Adjusts the IP of the receiver
       SPEAKER_CONFIG: '{"half": ["SR", "SL"], "quarter": []}' # Overrides default behavior if set: Sets which speakers to adjust and by how much: half/quarter.
-      # CONFIG_PATH: /app/config  # (Optional) Adjusts the path to the configuration file. Only relevant if not using Docker.
+      CONFIG_PATH: /app/config  # (Optional) Adjusts the path to the configuration file. Only relevant if not using Docker.
       # REFERENCE_VOLUME: 65 # Overrides default behavor if set: Will use this absolute volume as reference volume for calculations.
     volumes:
       - ./config:/app/config  # Maps your local config directory to /app/config in the container
