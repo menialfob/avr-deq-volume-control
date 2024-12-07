@@ -1,7 +1,9 @@
-import os
 import json
-import aiofiles
 import logging
+import os
+import re
+
+import aiofiles
 
 # Set up logging for error and info messages
 logger = logging.getLogger(__name__)
@@ -42,8 +44,6 @@ async def load_json_data(config_path):
     except Exception as err:
         logger.error('Error loading calibration file: %s', err)
         return None
-
-import re
 
 def get_reference_volume(json_data):
     """
