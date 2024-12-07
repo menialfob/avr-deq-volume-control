@@ -6,12 +6,12 @@ import signal
 
 import denonavr
 
-from adjustmentlogic import (
+from src.adjustmentlogic import (
     adjust_speaker_volumes,
     handle_volume_change_callback,
     parse_volume,
 )
-from json_loader import get_speaker_levels, load_json_data
+from src.json_loader import get_speaker_levels, load_json_data
 
 debounce_task = None
 latest_volume = None
