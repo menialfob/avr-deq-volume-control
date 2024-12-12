@@ -1,0 +1,32 @@
+#
+name: Publish Docker image for non-main branch
+
+# Configures this workflow to run every time a commit is pushed to non-main branch
+on:
+  push:
+
+# There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
+jobs:
+  build-python-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    steps:  
+      - uses: actions/checkout@v3  
+      - name: Set up Python ${{ matrix.python-version }}  
+        uses: actions/setup-python@v4  
+        with:  
+          python-version: ${{ matrix.python-version }}  
+          cache: 'pip' # Cache pip dependencies
+      - name: Install dependencies  
+        run: |  
+          python -m pip install --upgrade pip  
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+      - name: Test with pytest  
+        run: |  
+          coverage run -m pytest  -v -s  
+      - name: Generate Coverage Report  
+        run: |  
+          coverage report -m
