@@ -2,7 +2,7 @@ import json
 import logging
 import os
 
-from .json_loader import get_reference_volume, get_speaker_levels
+from json_loader import get_reference_volume, get_speaker_levels
 
 logger = logging.getLogger(__name__)
 
