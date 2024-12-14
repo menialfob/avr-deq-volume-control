@@ -3,7 +3,7 @@ import sys
 
 sys.path.append("../src")
 
-from adjustmentlogic import calculate_reference
+from src.adjustmentlogic import calculate_reference
 
 from .test_input_output_data import reference_test_data
 

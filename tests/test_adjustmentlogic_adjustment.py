@@ -1,9 +1,9 @@
 import pytest
 import sys
 
-sys.path.append("../src")
+sys.path.append("./src")
 
-from adjustmentlogic import calculate_adjustment
+from src.adjustmentlogic import calculate_adjustment
 
 from .test_input_output_data import absolute_values, expected_results, reference_values
 
